@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>Joga os produtos sem estoque pro final</name>
+  <code>out-of-stock-end</code>
+  <version>1.0</version>
+  <author>Lucas Leal</author>
+  <link>http://www.facebook.com/pagina404</link>
+  <file path="catalog/model/catalog/product.php">
+    <operation>
+      <search>
+        <![CDATA[$sql .= " ORDER BY p.sort_order";]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$sql .= " ORDER BY (case when p.quantity=0 then 1 else 0 END), p.sort_order";]]>
+      </add>
+    </operation>
+    <operation>
+      <search>
+        <![CDATA[$sql .= " ORDER BY " . $data['sort'];]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$sql .= " ORDER BY (case when p.quantity=0 then 1 else 0 END)," . $data['sort'];]]>
+      </add>
+    </operation>
+    <operation>
+      <search>
+        <![CDATA[$sql .= " ORDER BY (CASE WHEN special IS NOT NULL THEN special WHEN discount IS NOT NULL THEN discount ELSE p.price END)";]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$sql .= " ORDER BY (case when p.quantity=0 then 1 else 0 END),(CASE WHEN special IS NOT NULL THEN special WHEN discount IS NOT NULL THEN discount ELSE p.price END)";]]>
+      </add>
+    </operation>
+    <operation>
+      <search>
+        <![CDATA[$sql .= " ORDER BY LCASE(" . $data['sort'] . ")";]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$sql .= " ORDER BY (case when p.quantity=0 then 1 else 0 END),LCASE(" . $data['sort'] . ")";]]>
+      </add>
+    </operation>
+  </file>
+</modification>
